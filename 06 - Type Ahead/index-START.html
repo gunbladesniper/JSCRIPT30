@@ -39,6 +39,14 @@ function filterCities(wordToMatch){
 
 function displayCities(){
 
+  let matchCities = filterCities(this.value);
+  console.log(matchCities);
+  let html = matchCities.map((place)=>{
+    return `<li><span>${place.city}</span> <span>${place.state}</span></li>`
+
+  }).join('');
+
+  suggestions.innerHTML = html;
 };
 
 search.addEventListener('change', displayCities);
