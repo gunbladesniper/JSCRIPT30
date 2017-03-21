@@ -104,53 +104,41 @@
   </div>
 
 <script>
-var isShifted = false;
-[position1, position2] = [undefined,undefined];
 
-const checkBoxes = document.querySelectorAll('.item');
+let lastClicked;
 
-function holdshift(e){
-  if(e.keyCode === 16){
-    isShifted = !isShifted;
+const checkboxes = document.querySelectorAll('.inbox input[type="checkbox"]');
+
+function handleClicked(e){
+  let inBetween = false;
+  if(e.shiftKey && this.checked){
+    checkboxes.forEach(checkbox=>{
+      if(checkbox === this || checkbox === lastClicked){
+        inBetween = !inBetween
+      }
+      if(inBetween){
+       checkbox.checked = true;
+      }
+    })
   }
+
+  if(e.shiftKey && !this.checked){
+    checkboxes.forEach(checkbox=>{
+      if(checkbox === this || checkbox === lastClicked){
+        inBetween = !inBetween
+      }
+      if(inBetween){
+       checkbox.checked = false;
+      }
+    })
+  }
+
+  lastClicked = this
 }
 
-function getIndex(index){
-  if(!isShifted){
-    return;
-  }
-  if(isShifted){
-    if(position1 === undefined){
-      position1 = index;
-    }
-    else if(position2 === undefined) {
-      position2 = index;
-      var lower = Math.min(position1, position2);
-      var upper = Math.max(position1, position2);
-
-
-      checkBoxes.forEach((input, index)=>{
-        if(index >= lower && index <= upper ){
-          input.childNodes[1].checked = true;
-        }
-      })
-
-      position1 = undefined;
-      position2 = undefined;
-      return;
-    }
-  }
-}
-
-window.addEventListener('keydown', holdshift)
-window.addEventListener('keyup', holdshift);
-
-checkBoxes.forEach((input, index)=>{
-  input.childNodes[1].addEventListener('click', (e)=>
-    getIndex(index)
-    );
+checkboxes.forEach(checkbox=>{
+  checkbox.addEventListener('click', handleClicked);
 })
-
 
 
 </script>
